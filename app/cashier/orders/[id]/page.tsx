@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/Button";
 import { Card } from "@/components/Card";
@@ -10,8 +10,9 @@ import { useOrder } from "@/lib/hooks";
 export default function OrderDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = React.use(params);
   const router = useRouter();
   const searchParams = useSearchParams();
   const [statusUpdating, setStatusUpdating] = useState<string | null>(null);
@@ -36,7 +37,7 @@ export default function OrderDetailPage({
   ) => {
     setStatusUpdating(newStatus);
     try {
-      await updateStatus(params.id, newStatus);
+      await updateStatus(id, newStatus);
       if (newStatus === "delivered") {
         setTimeout(() => router.push("/cashier/orders"), 1500);
       }
